@@ -9,6 +9,8 @@ class InvertedIndex:
     def tokenize(self, text):
         tokens = []
         current_token = ""
+        # lower_text = text.lower()
+        # tokens = [token for token in lower_text.split() if token.isalnum()]
         for char in text.lower():
             if char.isalnum():
                 current_token += char
