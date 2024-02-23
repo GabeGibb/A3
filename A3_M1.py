@@ -17,13 +17,13 @@ class InvertedIndex:
     def add_posting(self, token, dicti):
         # print(self.index)
         if token not in self.index: # string, list<pair<string, int>>
-            self.index[token] = {dicti["url"]: dicti["content"].count(token)}
+            self.index[token] = {dicti["url"]: 1}
         # doc name/id & frequency in doc
         else:
             if dicti["url"] not in self.index[token]:
-                self.index[token][dicti["url"]] = dicti["content"].count(token)
+                self.index[token][dicti["url"]] = 1
             else:
-                self.index[token][dicti["url"]] += dicti["content"].count(token)
+                self.index[token][dicti["url"]] += 1
 
 
 
