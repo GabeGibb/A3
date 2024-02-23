@@ -39,15 +39,17 @@ def index_folder(folder):
             file_path = os.path.join(root, file_name)
             with open(file_path, 'r') as file:
                 # Process the contents of the file
-                for line in file: # url, content, encoding
-                    dicti = json.loads(line)
-                    content = dicti["content"]
-                    soup = BeautifulSoup(content, "html.parser")
-                    text = soup.get_text()
-                    tokens_list = index.tokenize(text)
+                plain_text = file.read()
 
-                    for token in tokens_list:
-                        index.add_posting(token, dicti)
+                dicti = json.loads(plain_text)
+                content = dicti["content"]
+                soup = BeautifulSoup(content, "html.parser")
+                text = soup.get_text()
+                tokens_list = index.tokenize(text)
+
+                for token in tokens_list:
+                    index.add_posting(token, dicti)
+
 
 
     # Serialize index to JSON file
@@ -73,6 +75,6 @@ def index_folder(folder):
 
 
 # This is a test folder I made with only a subset of the data
-index_folder("test")
+index_folder("test2")
 # index_folder("developer")
 
