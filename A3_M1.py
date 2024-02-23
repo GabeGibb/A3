@@ -40,7 +40,6 @@ def index_folder(folder):
             with open(file_path, 'r') as file:
                 # Process the contents of the file
                 plain_text = file.read()
-
                 dicti = json.loads(plain_text)
                 content = dicti["content"]
                 soup = BeautifulSoup(content, "html.parser")
@@ -75,6 +74,6 @@ def index_folder(folder):
 
 
 # This is a test folder I made with only a subset of the data
-index_folder("test2")
+index_folder("test")
 # index_folder("developer")
 
