@@ -1,0 +1,3 @@
+Stemming
+Not storing all data in a single dict object/json file
+Give weight to important words in H tag / bold etc (DONT JUST RELY ON FREQUENCY)
