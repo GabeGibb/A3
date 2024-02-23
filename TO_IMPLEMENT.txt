@@ -1,3 +1,9 @@
+M2
+Boolean query index
+
+M3
 Stemming
 Not storing all data in a single dict object/json file
-Give weight to important words in H tag / bold etc (DONT JUST RELY ON FREQUENCY)
+tf-idf - Give weight to important words in H tag / bold etc (DONT JUST RELY ON FREQUENCY)
+
+MAKE SURE FAST <=300ms query
