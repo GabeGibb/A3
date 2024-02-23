@@ -1,0 +1,2 @@
+Speed up tokenizer
+Come up with a more efficient way to store dict index data (repeated urls for the same word)
