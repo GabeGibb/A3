@@ -29,7 +29,6 @@ def index_folder(folder):
     # Example Test 1:
     index = InvertedIndex()
 
-    folder = "analyst"
     # Walk through all directories and files recursively
     for root, dirs, files in os.walk(folder):
         for file_name in files:
@@ -42,7 +41,7 @@ def index_folder(folder):
                     soup = BeautifulSoup(content, "html.parser")
                     text = soup.get_text()
                     tokens_list = index.tokenize(text)
-                    #print(tokens_list)
+
                     for token in tokens_list:
                         index.add_posting(token, dicti)
 
