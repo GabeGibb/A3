@@ -68,12 +68,9 @@ def index_folder(folder):
     print("Number of Indexed Documents: " + str(num_files))
     print("Total Size of Index on Disk in KB: " + str(file_size_kb))
 
-    # Remove the temporary file
-    # os.remove('index.json')
-    # print()
-
-
-# This is a test folder I made with only a subset of the data
-# index_folder("test")
-index_folder("developer")
+if __name__ == "__main__":
+    # This is a test folder I made with only a subset of the data
+    index_folder("test")
+    # index_folder("analyst")
+    # index_folder("developer")
 
