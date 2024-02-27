@@ -47,7 +47,8 @@ def index_folder(folder):
                     tokens_list = index.tokenize(text)
 
                     for token in tokens_list:
-                        index.add_posting(token, dicti)
+                        # Adding lowercased version of tokens
+                        index.add_posting(token.lower(), dicti)
 
 
 
@@ -70,7 +71,6 @@ def index_folder(folder):
 
 if __name__ == "__main__":
     # This is a test folder I made with only a subset of the data
-    index_folder("test")
+    # index_folder("test")
     # index_folder("analyst")
-    # index_folder("developer")
-
+    index_folder("developer")
