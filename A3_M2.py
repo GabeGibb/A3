@@ -5,16 +5,16 @@ def load_index():
         index = json.load(file)
     return index
 
-# Searching query
-def search_index(index):
+def get_query():
     print()
     query = input("Search Bar: ").split()
     for i in range(len(query)):
         # Lowercasing the query
         query[i] = query[i].lower()
+    return query
 
-    # Implicitly uses AND operation on query with multiple words
-    top_5 = None
+def get_intersection_of_urls(index, query):
+    urls_set = None
     for word in query:
         try:
             result = index[word]
@@ -22,34 +22,45 @@ def search_index(index):
             # In case word does not exist in index
             print("No results found.")
             return
-        if top_5 is None:
-            top_5 = set(result.keys())
+        if urls_set is None:
+            urls_set = set(result.keys())
         else:
             # Where the AND operation happens
-            top_5 = top_5.intersection(set(result.keys()))
+            urls_set = urls_set.intersection(set(result.keys()))
+    return urls_set
 
-    # Finding top 5 URLs
-    if len(top_5) == 0:
-        # In case words do not share any URLs
-        print("No results found.")
-        return
-    # Calculates each URL's relevancy score
-    top_5_with_scores = []
-    for url in top_5:
+def get_scores_for_urls(index, urls_set, query):
+    urls_with_scores = []
+    for url in urls_set:
         relevancy_score = 0
         for word in query:
             # Makes sure word and url are valid
             if word in index and url in index[word]:
                 # Relevancy score correlates with frequency
                 relevancy_score += index[word][url]
-        top_5_with_scores.append((url, relevancy_score))
-    top_5 = top_5_with_scores
+        urls_with_scores.append((url, relevancy_score))
+    return urls_with_scores
+
+# Searching query
+def search_index(index):
+    query = get_query()
+
+    # Implicitly uses AND operation on query with multiple words
+    urls_set = get_intersection_of_urls(index, query)
+    # In case words do not share any URLs
+    if len(urls_set) == 0:
+        print("No results found.")
+        return
+    
+    # Calculates each URL's relevancy score
+    urls_with_scores = get_scores_for_urls(index, urls_set, query)
+
     # Final top 5 URLs
-    top_5 = sorted(top_5, key=lambda x: x[1], reverse=True)[:5]
+    top_5 = sorted(urls_with_scores, key=lambda x: x[1], reverse=True)[:5]
 
     print('TOP URLS:')
     for top in top_5:
-        print(top[0])
+        print(top)
 
 
 if __name__ == "__main__":
