@@ -23,8 +23,7 @@ def get_query():
 def get_intersection_of_urls(query):
     urls_set = None
     small_index = {}
-    index = {}
-    for word in sorted(query):
+    for word in query:
         try:
             result = load_index(word)
             small_index[word] = result
