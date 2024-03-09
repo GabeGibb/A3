@@ -1,9 +1,15 @@
-M2
-Boolean query index
 
-M3
-Stemming
-Not storing all data in a single dict object/json file
-tf-idf - Give weight to important words in H tag / bold etc (DONT JUST RELY ON FREQUENCY)
+indexer
+    *tokenize
+    *do not use stopping while indexing
+    Stemming
+    important text
+    offload to multiple indices then merge
 
-MAKE SURE FAST <=300ms query
+search
+    stem terms
+    *get ranks for urls
+    tf-idf and important words (cosine similarity?)
+    FAST <=300ms query
+    cannot load entire index from memory
+    what the freak does boolean queries do we need to do more than that?????
