@@ -27,6 +27,29 @@ class InvertedIndex:
 
 
 
+def extract_important_words(content):
+    important_words = []
+    soup = BeautifulSoup(content, 'html.parser')
+    
+    bold_text = soup.find_all(['b', 'strong'])
+    for tag in bold_text:
+        for word in tag.get_text().split():
+            important_words.append(word.lower())
+            
+    headings = soup.find_all(['h1', 'h2', 'h3'])
+    for tag in headings:
+        for word in tag.get_text().split():
+            important_words.append(word.lower())
+            
+    title = soup.find('title')
+    if title:
+        for word in title.get_text().split():
+            important_words.append(word.lower())
+
+    return important_words
+
+
+
 def index_folder(folder):
     # Example Test 1:
     index = InvertedIndex()
@@ -45,8 +68,12 @@ def index_folder(folder):
                     soup = BeautifulSoup(content, "html.parser")
                     text = soup.get_text()
                     tokens_list = index.tokenize(text)
-
+                    
+                    important_words = extract_important_words(content)
                     for token in tokens_list:
+                        # CHANGE: Increases important words' frequencies by 2
+                        if token in important_words:
+                            index.add_posting(token.lower(), dicti)
                         # Adding lowercased version of tokens
                         index.add_posting(token.lower(), dicti)
 

@@ -1,0 +1,62 @@
+Poor Performance
+
+"": Inputting an empty query broke the search engine and raised a TypeError exception because of an attempt to find the length of an
+object of type NoneType. Even a query containing just space characters raised the same exception. To fix this, we modified the part that
+checks the length of the object to see if the object is None beforehand. A print statement was also removed due to the unneeded repetition
+of the statement 'No results found.'
+
+" ": Queries containing just space characters raised the same exception as entering an empty query due to the same reason. We fixed this
+issue the same way we did for the case of an empty query.
+
+"Hello :)": This query contains both alphanumeric and non-alphanumeric terms. The problem with this query was that it viewed ':)'
+as a valid term for a query, despite it being not alphanumeric, which would make it impossible to find as a token in any documents in the
+first place. This resulted in there being no results found, since ':)' would not have any documents, thus sharing no documents with the
+valid query terms. We added a for loop inside of the 'get_query' function to remove any non-alphanumeric terms in the query.
+
+"Hello 🗿": This query contains both a known valid term and an emoji. The problem with this query was that it viewed '🗿' as a valid term
+for a query, despite it being not alphanumeric, which would make it impossible to find as a token in any documents in the first place. The
+result was similar to that of the 'hello :)' query. We fixed the issue the same way, having modified the 'get_query' function to remove any
+non-alphanumeric terms in the query.
+
+"Héllo World": This query contains a valid term and a term with a non-English character, which is supposed to make it invalid. However,
+the search engine detected it as valid, this being found out when it was observed that the valid term 'World' shares no documents with
+'Héllo', which is not found in any documents in the first place. We modified the 'get_query' function again to make sure that any terms
+with non-English characters were removed from the query.
+
+"the flood": This query contains 'the', which is a very common English stopword. The problem with this query was that the main term of
+interest is 'flood'. Looking at the top document in the search, 'the' appears over ten thousand times, while 'flood' only appears like five
+times. In order to fix this, the 'get_scores_for_urls' function was modified to rank documents using tf-idf instead of just term frequency.
+Even after this was successfully implemented, the same document remained the top result because of the sheer frequency of the term 'the',
+the rarity of the term 'flood' being overshadowed by it.
+
+
+
+Good Performance
+
+"Amogus": This fake word was used to check if it existed within the index. Like expected, no results were found.
+
+"Amogus World": Knowing that 'Amogus' did not exist in the index and that 'World' did, the terms were combined into a single query. Since
+'Amogus' did not exist, then there should be no URLs that they share with 'World'. Like expected, no results were found.
+
+"2023": This purely numerical query is meant to find any documents that mention the year '2023'. It works as intended.
+
+"professor 2023": This query mixes both alphabetical and numerical characters. It works as intended, providing documents that contain both
+the terms 'professor' and '2023'.
+
+":)": The query is not empty but contains no alphabetical or numerical characters at all. It works as intended, not providing any documents
+because of the search engine's deliberate design of not considering special characters in queries.
+
+"cs143a": This query was used to check if the search engine accepts words that contain both alphabetical and numerical characters, not just
+separate purely alphabetical and purely numerical terms in the same query. It works as intended.
+
+"hello world": This query is the lowercased version of a known valid query. It was used to see if the requirement for the search engine
+to be not case-sensitive was fulfilled. Since this returns the same results as the query 'Iftekhar Ahmed', it works as intended.
+
+"HELLO WORLD": This query is the uppercased version of a known valid query. It was used to see if the requirement for the search engine
+to be not case-sensitive was fulfilled. Since this returns the same results as the query 'Iftekhar Ahmed', it works as intended.
+
+"Héllo": This query contains a character that does not exist in the English alphabet, therefore it is an invalid term for a query. It works
+as intended, returning no documents.
+
+"🗿": This query contains just an emoji, which is encoded in the Unicode Standard. Since it is not alphanumeric, it works as intended,
+returning no documents.
