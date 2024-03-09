@@ -8,7 +8,7 @@ indexer
     offload to multiple indices then merge
 
 search
-    stem terms
+    *stem terms
     *get ranks for urls
     tf-idf and important words (cosine similarity?)
     FAST <=300ms query

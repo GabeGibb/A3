@@ -12,21 +12,11 @@ def get_query():
     query = input("Search Bar: ").split()
     stemmer = PorterStemmer()
     stemmed_query = []
-    for word in query:
-        stemmed_query.append(stemmer.stem(word.lower()))
-    # CHANGE: For loop used to remove invalid (non-alphanumeric) terms
-    # CHANGE: For loop to make sure terms do not contain foreign characters
-    query = stemmed_query
-    for word in query[:]:
-        valid_char = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-                      'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-                      'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6',
-                      '7', '8', '9']
-        for char in word:
-            if char not in valid_char:
-                query.remove(word)
-                break
-    return query
+
+    # Combine stemming and filtering non-alphanumeric characters in one step
+    stemmed_query = [stemmer.stem(word.lower()) for word in query if word.isalnum()]
+
+    return stemmed_query
 
 def get_intersection_of_urls(index, query):
     urls_set = None
