@@ -17,4 +17,4 @@ search
     *boolean queries (i think so)
 
 TEST.txt 
-    NOT DONE?
+    *DONE!

@@ -29,7 +29,20 @@ times. In order to fix this, the 'get_scores_for_urls' function was modified to 
 Even after this was successfully implemented, the same document remained the top result because of the sheer frequency of the term 'the',
 the rarity of the term 'flood' being overshadowed by it.
 
+"ahmed": This query was returning zero results when we tried to search it. This is because we were stemming search terms, but were not stemming 
+things in our index. This caused many words to not be able to be found when searching. Making our index stem the words before storing them 
+fixed this issue.
 
+"a high world": This query was incredibly slow since at one point we were offloading our indices into 3 indexes based on alphabetical order.
+Loading different words from different parts of the alphabet cause our code to load large indices individually, meaning a super slow search time.
+In order to fix this, we made it so our key in the index is actually a file name, and loading a word from an index only loads the content associated
+with that word from an individual file. While this made it so we have a lot of individual files, our search goes really fast since each file is tiny.
+
+"uci": This query worked mostly as intended, but every url should have fairly high scores for this search. We were not treating important words any
+differently than normal words, so to fix this we made it so important words count for double the frequency of normal words.
+
+"WhAt iS HapPEning": This query worked very poorly since words usually do not have weird cases. To fix this, our indexer and searcher convert every
+term to lowercase to make sure case sensitivities don't impact our engine.
 
 Good Performance
 
