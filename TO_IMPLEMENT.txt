@@ -1,9 +1,10 @@
+* means done
 
 indexer
     *tokenize
     *do not use stopping while indexing
-    Stemming
-    important text
+    *Stemming
+    *important text (they are worth double) (def works)
     offload to multiple indices then merge
 
 search
@@ -11,5 +12,5 @@ search
     *get ranks for urls
     tf-idf and important words (cosine similarity?)
     FAST <=300ms query
-    cannot load entire index from memory
+    cannot load entire index from memory (need to access specific index)
     what the freak does boolean queries do we need to do more than that?????

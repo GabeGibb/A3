@@ -2,10 +2,12 @@ import json
 import os
 from bs4 import BeautifulSoup
 import re
+from nltk.stem import PorterStemmer
 
 class InvertedIndex:
     def __init__(self):
         self.index = {}
+        self.stemmer = PorterStemmer()
 
     def tokenize(self, text):
         # More efficient way to tokenize
@@ -15,6 +17,8 @@ class InvertedIndex:
         return alphaNumText.split()
 
     def add_posting(self, token, dicti):
+        token = self.stemmer.stem(token.lower())
+
         # print(self.index)
         if token not in self.index: # string, list<pair<string, int>>
             self.index[token] = {dicti["url"]: 1}
@@ -30,21 +34,11 @@ class InvertedIndex:
 def extract_important_words(content):
     important_words = []
     soup = BeautifulSoup(content, 'html.parser')
-    
-    bold_text = soup.find_all(['b', 'strong'])
-    for tag in bold_text:
+    # shortened, you can find all in one statement
+    tags = soup.find_all(['h1', 'h2', 'h3', 'b', 'strong', 'title'])
+    for tag in tags:
         for word in tag.get_text().split():
-            important_words.append(word.lower())
-            
-    headings = soup.find_all(['h1', 'h2', 'h3'])
-    for tag in headings:
-        for word in tag.get_text().split():
-            important_words.append(word.lower())
-            
-    title = soup.find('title')
-    if title:
-        for word in title.get_text().split():
-            important_words.append(word.lower())
+            important_words.append(word)
 
     return important_words
 
@@ -73,9 +67,9 @@ def index_folder(folder):
                     for token in tokens_list:
                         # CHANGE: Increases important words' frequencies by 2
                         if token in important_words:
-                            index.add_posting(token.lower(), dicti)
+                            index.add_posting(token, dicti)
                         # Adding lowercased version of tokens
-                        index.add_posting(token.lower(), dicti)
+                        index.add_posting(token, dicti)
 
 
 
@@ -98,6 +92,6 @@ def index_folder(folder):
 
 if __name__ == "__main__":
     # This is a test folder I made with only a subset of the data
-    # index_folder("test")
+    index_folder("tiny")
     # index_folder("analyst")
-    index_folder("developer")
+    # index_folder("developer")
