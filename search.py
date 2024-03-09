@@ -2,37 +2,18 @@ import json
 from nltk.stem import PorterStemmer
 import math
 
-# h, q, z
-def load_index(letter):
-    letter = letter.lower()
-    file_letter = ''
-    if letter <= 'h':
-        with open('indices/merged_index_a.json', 'r') as file:
-            index = json.load(file)
-            file_letter = 'a'
-    elif letter <= 'q':
-        with open('indices/merged_index_b.json', 'r') as file:
-            index = json.load(file)
-            file_letter = 'b'
-    else:
-        with open('indices/merged_index_c.json', 'r') as file:
-            index = json.load(file)
-            file_letter = 'c'
-    return index, file_letter
-
-def calculate_file_letter(letter):
-    letter = letter.lower()
-    if letter <= 'h':
-        return 'a'
-    elif letter <= 'q':
-        return 'b'
-    return 'c'
+def load_index(word):
+    with open(f'indices/{word}.json', 'r') as file:
+        index_data = json.load(file)
+    return index_data
 
 def get_query():
     print()
     query = input("Search Bar: ").split()
+    if (query == []):
+        print("No query entered.")
+        quit()
     stemmer = PorterStemmer()
-    stemmed_query = []
 
     # Combine stemming and filtering non-alphanumeric characters in one step
     stemmed_query = [stemmer.stem(word.lower()) for word in query if word.isalnum()]
@@ -43,16 +24,13 @@ def get_intersection_of_urls(query):
     urls_set = None
     small_index = {}
     index = {}
-    index_letter = ''
     for word in sorted(query):
-        if index_letter != calculate_file_letter(word) or index == {}:
-            index, index_letter = load_index(word[0])
         try:
-            result = index[word]
+            result = load_index(word)
             small_index[word] = result
         except:
             # In case word does not exist in index
-            return
+            return None, None
         if urls_set is None:
             urls_set = set(result.keys())
         else:
@@ -118,7 +96,7 @@ def search_index():
 
 
 if __name__ == "__main__":
-    search_index()
-    # search_index(index)
-    # search_index(index)
-    # search_index(index)
+    print("Welcome to the search engine!")
+    print("Press Ctrl+C or enter nothing to exit.")
+    while True:
+        search_index()

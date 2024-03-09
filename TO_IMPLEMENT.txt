@@ -11,10 +11,10 @@ indexer
 search
     *stem terms
     *get ranks for urls
-    -tf-idf and important words (cosine similarity?)
-    FAST <=300ms query
-    cannot load entire index from memory (need to access specific index)
+    *tf-idf and important words (cosine similarity?)
+    *FAST <=300ms query
+    *cannot load entire index from memory (need to access specific index)
     *boolean queries (i think so)
 
-QS:
-does CHANGE: mean it needs to change or you changed it
+TEST.txt 
+    NOT DONE?
