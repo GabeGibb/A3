@@ -6,7 +6,7 @@ indexer
     *do not use stopping while indexing
     *Stemming
     *important text (they are worth double) (def works)
-    offload to multiple indices then merge
+    *offload to multiple indices then merge
 
 search
     *stem terms

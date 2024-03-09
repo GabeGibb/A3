@@ -2,10 +2,31 @@ import json
 from nltk.stem import PorterStemmer
 import math
 
-def load_index():
-    with open('index.json', 'r') as file:
-        index = json.load(file)
-    return index
+# h, q, z
+def load_index(letter):
+    letter = letter.lower()
+    file_letter = ''
+    if letter <= 'h':
+        with open('indices/merged_index_a.json', 'r') as file:
+            index = json.load(file)
+            file_letter = 'a'
+    elif letter <= 'q':
+        with open('indices/merged_index_b.json', 'r') as file:
+            index = json.load(file)
+            file_letter = 'b'
+    else:
+        with open('indices/merged_index_c.json', 'r') as file:
+            index = json.load(file)
+            file_letter = 'c'
+    return index, file_letter
+
+def calculate_file_letter(letter):
+    letter = letter.lower()
+    if letter <= 'h':
+        return 'a'
+    elif letter <= 'q':
+        return 'b'
+    return 'c'
 
 def get_query():
     print()
@@ -18,21 +39,26 @@ def get_query():
 
     return stemmed_query
 
-def get_intersection_of_urls(index, query):
+def get_intersection_of_urls(query):
     urls_set = None
-    for word in query:
+    small_index = {}
+    index = {}
+    index_letter = ''
+    for word in sorted(query):
+        if index_letter != calculate_file_letter(word) or index == {}:
+            index, index_letter = load_index(word[0])
         try:
             result = index[word]
+            small_index[word] = result
         except:
             # In case word does not exist in index
-            # CHANGE: Removed "print("No results found.")" because of repetition
             return
         if urls_set is None:
             urls_set = set(result.keys())
         else:
             # Where the AND operation happens
             urls_set = urls_set.intersection(set(result.keys()))
-    return urls_set
+    return urls_set, small_index
 
 def get_scores_for_urls(index, urls_set, query):
     urls_set = list(urls_set)
@@ -42,9 +68,7 @@ def get_scores_for_urls(index, urls_set, query):
     for url in urls_set:
         relevancy_score = 0
         for word in query:
-            # Makes sure word and url are valid
-            if word in index and url in index[word]:
-                relevancy_score += index[word][url]
+            relevancy_score += index[word][url]
         relevancy_score = math.log(relevancy_score, 10) + 1
         tf.append((url, relevancy_score))
     
@@ -58,9 +82,7 @@ def get_scores_for_urls(index, urls_set, query):
     for url in urls_set:
         relevancy_score = 0
         for word in query:
-            # Makes sure word and url are valid
-            if word in index and url in index[word]:
-                relevancy_score += len(index[word])
+            relevancy_score += len(index[word])
         df.append((url, relevancy_score))
 
     idf = []
@@ -74,18 +96,18 @@ def get_scores_for_urls(index, urls_set, query):
     return urls_with_scores
 
 # Searching query
-def search_index(index):
+def search_index():
     query = get_query()
 
     # Implicitly uses AND operation on query with multiple words
-    urls_set = get_intersection_of_urls(index, query)
+    urls_set, small_index = get_intersection_of_urls(query)
     # In case words do not share any URLs
     if urls_set is None or len(urls_set) == 0:
         print("No results found.")
         return
     
     # Calculates each URL's relevancy score (tf-idf)
-    urls_with_scores = get_scores_for_urls(index, urls_set, query)
+    urls_with_scores = get_scores_for_urls(small_index, urls_set, query)
 
     # Final top 5 URLs
     top_5 = sorted(urls_with_scores, key=lambda x: x[1], reverse=True)[:5]
@@ -96,8 +118,7 @@ def search_index(index):
 
 
 if __name__ == "__main__":
-    index = load_index()
-    search_index(index)
+    search_index()
     # search_index(index)
     # search_index(index)
     # search_index(index)

@@ -33,8 +33,9 @@ class InvertedIndex:
                 self.index[token][dicti["url"]] += 1
 
     def offload_index_if_needed(self):
+        # If size too big offload to file
         size_in_bytes = sys.getsizeof(self.index)
-        if size_in_bytes > 1000000:
+        if size_in_bytes > 10000000:
             with open(f'temp_indices/index_{self.index_counter}.json', 'w') as file:
                 json.dump(self.index, file)
             self.index = {}
@@ -125,13 +126,14 @@ def index_folder(folder):
                     
                     important_words = extract_important_words(content)
                     for token in tokens_list:
-                        # CHANGE: Increases important words' frequencies by 2
+                        # Increases important words' frequencies by 2
                         if token in important_words:
                             index.add_posting(token, dicti)
                         # Adding lowercased version of tokens
                         index.add_posting(token, dicti)
             index.offload_index_if_needed()
     
+    # Merge the indexes into 3 indices and delete the temp indices
     index.merge_indices()
     try:
         shutil.rmtree(dir_name)
@@ -140,26 +142,6 @@ def index_folder(folder):
 
 if __name__ == "__main__":
     # This is a test folder I made with only a subset of the data
-    index_folder("test")
+    # index_folder("test")
     # index_folder("analyst")
-    # index_folder("developer")
-
-
-
-#PAST CODE
-# # Serialize index to JSON file
-# with open('index.json', 'w') as file:
-#     json.dump(index.index, file)
-
-# # Get size the file in bytes
-# file_size_bytes = os.path.getsize('index.json')
-# # Convert bytes to kilobytes
-# file_size_kb = file_size_bytes / 1024
-
-# # For the report
-# unique_words = len(index.index)
-
-# print("Directory: " + folder)
-# print("Number of Unique Words: " + str(unique_words))
-# print("Number of Indexed Documents: " + str(num_files))
-# print("Total Size of Index on Disk in KB: " + str(file_size_kb))
+    index_folder("developer")
