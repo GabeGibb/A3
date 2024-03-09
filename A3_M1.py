@@ -1,5 +1,7 @@
 import json
 import os
+import sys
+import shutil
 from bs4 import BeautifulSoup
 import re
 from nltk.stem import PorterStemmer
@@ -7,6 +9,7 @@ from nltk.stem import PorterStemmer
 class InvertedIndex:
     def __init__(self):
         self.index = {}
+        self.index_counter = 1
         self.stemmer = PorterStemmer()
 
     def tokenize(self, text):
@@ -29,6 +32,57 @@ class InvertedIndex:
             else:
                 self.index[token][dicti["url"]] += 1
 
+    def offload_index_if_needed(self):
+        size_in_bytes = sys.getsizeof(self.index)
+        if size_in_bytes > 1000000:
+            with open(f'temp_indices/index_{self.index_counter}.json', 'w') as file:
+                json.dump(self.index, file)
+            self.index = {}
+            self.index_counter += 1
+
+    def merge_indices(self):
+
+        # Merge all indices into three separate merged indexes alphabetically
+        merged_index_a = {}
+        merged_index_b = {}
+        merged_index_c = {}
+
+        for root, _, files in os.walk("temp_indices"):
+            for file_name in files:
+                with open(os.path.join(root, file_name), 'r') as file:
+                    index = json.load(file)
+                    for key in index:
+                        if key[0].lower() <= 'h':
+                            if key not in merged_index_a:
+                                merged_index_a[key] = index[key]
+                            else:
+                                # Merge into dict by adding the two dictionaries together
+                                merged_index_a[key].update(index[key])
+                        elif key[0].lower() <= 'q':
+                            if key not in merged_index_b:
+                                merged_index_b[key] = index[key]
+                            else:
+                                # Merge into dict by adding the two dictionaries together
+                                merged_index_b[key].update(index[key])
+                        else:
+                            if key not in merged_index_c:
+                                merged_index_c[key] = index[key]
+                            else:
+                                # Merge into dict by adding the two dictionaries together
+                                merged_index_c[key].update(index[key])
+        dir_name = "indices"
+        if not os.path.exists(dir_name):
+            # If it doesn't exist, create it
+            os.makedirs(dir_name)
+
+        with open('indices/merged_index_a.json', 'w') as file:
+            json.dump(merged_index_a, file)
+
+        with open('indices/merged_index_b.json', 'w') as file:
+            json.dump(merged_index_b, file)
+
+        with open('indices/merged_index_c.json', 'w') as file:
+            json.dump(merged_index_c, file)
 
 
 def extract_important_words(content):
@@ -45,6 +99,12 @@ def extract_important_words(content):
 
 
 def index_folder(folder):
+    # Create a folder to store offloaded indices if it doesnt exist
+    dir_name = "temp_indices"
+    if not os.path.exists(dir_name):
+        # If it doesn't exist, create it
+        os.makedirs(dir_name)
+
     # Example Test 1:
     index = InvertedIndex()
 
@@ -70,28 +130,36 @@ def index_folder(folder):
                             index.add_posting(token, dicti)
                         # Adding lowercased version of tokens
                         index.add_posting(token, dicti)
-
-
-
-    # Serialize index to JSON file
-    with open('index.json', 'w') as file:
-        json.dump(index.index, file)
-
-    # Get size the file in bytes
-    file_size_bytes = os.path.getsize('index.json')
-    # Convert bytes to kilobytes
-    file_size_kb = file_size_bytes / 1024
-
-    # For the report
-    unique_words = len(index.index)
-
-    print("Directory: " + folder)
-    print("Number of Unique Words: " + str(unique_words))
-    print("Number of Indexed Documents: " + str(num_files))
-    print("Total Size of Index on Disk in KB: " + str(file_size_kb))
+            index.offload_index_if_needed()
+    
+    index.merge_indices()
+    try:
+        shutil.rmtree(dir_name)
+    except OSError as error:
+        print(f"Error: {error}")
 
 if __name__ == "__main__":
     # This is a test folder I made with only a subset of the data
-    index_folder("tiny")
+    index_folder("test")
     # index_folder("analyst")
     # index_folder("developer")
+
+
+
+#PAST CODE
+# # Serialize index to JSON file
+# with open('index.json', 'w') as file:
+#     json.dump(index.index, file)
+
+# # Get size the file in bytes
+# file_size_bytes = os.path.getsize('index.json')
+# # Convert bytes to kilobytes
+# file_size_kb = file_size_bytes / 1024
+
+# # For the report
+# unique_words = len(index.index)
+
+# print("Directory: " + folder)
+# print("Number of Unique Words: " + str(unique_words))
+# print("Number of Indexed Documents: " + str(num_files))
+# print("Total Size of Index on Disk in KB: " + str(file_size_kb))

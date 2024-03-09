@@ -2,6 +2,7 @@ developer/
 test/
 test2/
 tiny/
+indices/
 index.json
 indexBIG.json
 indexSMALL.json
