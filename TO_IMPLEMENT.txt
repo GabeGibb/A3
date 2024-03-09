@@ -1,4 +1,5 @@
 * means done
+- means implemented but no clue if it works
 
 indexer
     *tokenize
@@ -10,7 +11,10 @@ indexer
 search
     *stem terms
     *get ranks for urls
-    tf-idf and important words (cosine similarity?)
+    -tf-idf and important words (cosine similarity?)
     FAST <=300ms query
     cannot load entire index from memory (need to access specific index)
-    what the freak does boolean queries do we need to do more than that?????
+    -boolean queries (i think so)
+
+QS:
+does CHANGE: mean it needs to change or you changed it
