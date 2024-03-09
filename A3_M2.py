@@ -80,14 +80,11 @@ def search_index(index):
     # Implicitly uses AND operation on query with multiple words
     urls_set = get_intersection_of_urls(index, query)
     # In case words do not share any URLs
-    if urls_set is None:
-        print("No results found.") # CHANGE: elif len(urls_set) and if None
-        return
-    elif len(urls_set) == 0:
+    if urls_set is None or len(urls_set) == 0:
         print("No results found.")
         return
     
-    # Calculates each URL's relevancy score
+    # Calculates each URL's relevancy score (tf-idf)
     urls_with_scores = get_scores_for_urls(index, urls_set, query)
 
     # Final top 5 URLs
@@ -101,6 +98,6 @@ def search_index(index):
 if __name__ == "__main__":
     index = load_index()
     search_index(index)
-    search_index(index)
-    search_index(index)
-    search_index(index)
+    # search_index(index)
+    # search_index(index)
+    # search_index(index)

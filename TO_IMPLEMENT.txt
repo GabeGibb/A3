@@ -14,7 +14,7 @@ search
     -tf-idf and important words (cosine similarity?)
     FAST <=300ms query
     cannot load entire index from memory (need to access specific index)
-    -boolean queries (i think so)
+    *boolean queries (i think so)
 
 QS:
 does CHANGE: mean it needs to change or you changed it
