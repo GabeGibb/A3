@@ -94,32 +94,32 @@ def index_folder(folder):
     # Example Test 1:
     index = InvertedIndex()
 
-    # num_files = 0
-    # # Walk through all directories and files recursively
-    # for root, _, files in os.walk(folder):
-    #     num_files += len(files)
-    #     for file_name in files:
-    #         file_path = os.path.join(root, file_name)
-    #         with open(file_path, 'r') as file:
-    #             # Process the contents of the file
-    #             for line in file:
-    #                 dicti = json.loads(line)
-    #                 content = dicti["content"]
-    #                 soup = BeautifulSoup(content, "html.parser")
-    #                 text = soup.get_text()
-    #                 tokens_list = index.tokenize(text)
+    num_files = 0
+    # Walk through all directories and files recursively
+    for root, _, files in os.walk(folder):
+        num_files += len(files)
+        for file_name in files:
+            file_path = os.path.join(root, file_name)
+            with open(file_path, 'r') as file:
+                # Process the contents of the file
+                for line in file:
+                    dicti = json.loads(line)
+                    content = dicti["content"]
+                    soup = BeautifulSoup(content, "html.parser")
+                    text = soup.get_text()
+                    tokens_list = index.tokenize(text)
                     
-    #                 important_words = extract_important_words(content)
-    #                 for token in tokens_list:
-    #                     # Increases important words' frequencies by 2
-    #                     if token in important_words:
-    #                         index.add_posting(token, dicti)
-    #                     # Adding lowercased version of tokens
-    #                     index.add_posting(token, dicti)
-    #         index.offload_index_if_needed()
+                    important_words = extract_important_words(content)
+                    for token in tokens_list:
+                        # Increases important words' frequencies by 2
+                        if token in important_words:
+                            index.add_posting(token, dicti)
+                        # Adding lowercased version of tokens
+                        index.add_posting(token, dicti)
+            index.offload_index_if_needed()
     
-    # # Offload the last index
-    # index.offload_index_if_needed(True)
+    # Offload the last index
+    index.offload_index_if_needed(True)
 
     # Merge the indexes into 3 indices and delete the temp indices
     index.merge_indices()
